@@ -49,9 +49,12 @@ namespace DogGo.Repositories
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("OwnerId")),
                                 Name = reader.GetString(reader.GetOrdinal("Owner"))
-                            }
-                            //Notes = reader.GetString(reader.GetOrdinal("Notes")),
-                            //ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"))
+                            },
+                            Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ?
+                                    "No Notes Found" : reader.GetString(reader.GetOrdinal("Notes")),
+                            ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ?
+                                    null : reader.GetString(reader.GetOrdinal("ImageUrl"))
+
                         };
                         dogs.Add(dog);
                     }
