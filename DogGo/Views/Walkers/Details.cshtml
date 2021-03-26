@@ -1,42 +1,45 @@
-﻿@model DogGo.Models.Walker
+﻿@model DogGo.Models.ViewModels.WalkerProfileViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Profile";
 }
 
-<h1>Details</h1>
+<h1>Walker Profile</h1>
 
-<div>
-    <h4>Walker</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            Neighborhood 
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Neighborhood.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            Image
-        </dt>
-        <dd class="col-sm-10">
-            <img class="bg-info" src="@Model.ImageUrl" alt="avatar" style="width:200px" />
-        </dd>
-    </dl>
+<div class="card">
+    <img class="card-img-top" src="@Model.Walker.ImageUrl" style="width:100px" />
+    <div class="card-body">
+        <label class="font-weight-bold">Name: </label>
+        <span>@Model.Walker.Name</span>
+    </div> 
+    <div class="card-body">
+        <label class="font-weight-bold">Neighborhood: </label>
+        <span>@Model.Walker.Neighborhood.Name</span>
+    </div>
+    <div>
+        @Html.ActionLink("Edit", "Edit", new {  id = Model.Walker.Id  }) |
+        <a asp-action="Index">Back to List</a>
+    </div>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+<div class="row">
+    <div class="col-8">
+        <h1>Recent Walks</h1>
+        <table>
+            <thead>
+                <th>Date</th>
+                <th>Client</th>
+                <th>Duration</th>
+            </thead>
+            <tbody>
+                @foreach (Walk walk in Model.Walks)
+            {
+                <tr>
+                    <td>@walk.Date.ToString("d")</td>
+                    <td>@walk.ClientName</td>
+                    <td>@walk.Duration seconds</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </div>
