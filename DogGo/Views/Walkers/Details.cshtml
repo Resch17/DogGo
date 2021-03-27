@@ -4,31 +4,42 @@
     ViewData["Title"] = "Profile";
 }
 
-<h1>Walker Profile</h1>
 
-<div class="card">
-    <img class="card-img-top" src="@Model.Walker.ImageUrl" style="width:100px" />
-    <div class="card-body">
-        <label class="font-weight-bold">Name: </label>
-        <span>@Model.Walker.Name</span>
-    </div> 
-    <div class="card-body">
-        <label class="font-weight-bold">Neighborhood: </label>
-        <span>@Model.Walker.Neighborhood.Name</span>
-    </div>
-    <div>
-        @Html.ActionLink("Edit", "Edit", new {  id = Model.Walker.Id  }) |
-        <a asp-action="Index">Back to List</a>
+<div class="bg-light row pb-4">
+    <div class="col-12">
+        <h1 class="my-5 ml-2">Walker Profile</h1>
+        <div class="row mt-2">
+            <div class="col-3 text-center ml-2" style="border-radius:50%;">
+                <img class="card-img-top shadow" src="@Model.Walker.ImageUrl" style="width:150px;border-radius:50%;" />
+            </div>
+            <div class="col-8">
+                <div class="card-body">
+                    <label class="font-weight-bold">Name: </label>
+
+                    <span>@Model.Walker.Name</span>
+                </div>
+                <div class="card-body">
+                    <label class="font-weight-bold">Neighborhood: </label>
+                    <span>@Model.Walker.Neighborhood.Name</span>
+                    <div>
+                        @Html.ActionLink("Edit", "Edit", new { id = Model.Walker.Id }) |
+                        <a asp-action="Index">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
     <div class="col-8">
         <h1>Recent Walks</h1>
-        <table>
+        <table class="table">
             <thead>
-                <th>Date</th>
-                <th>Client</th>
-                <th>Duration</th>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Client</th>
+                    <th scope="col">Duration</th>
+                </tr>
             </thead>
             <tbody>
                 @foreach (Walk walk in Model.Walks)
@@ -36,10 +47,14 @@
                 <tr>
                     <td>@walk.Date.ToString("d")</td>
                     <td>@walk.ClientName</td>
-                    <td>@walk.Duration seconds</td>
+                    <td>@(walk.Duration / 60 ) min</td>
                 </tr>
             }
             </tbody>
         </table>
+    </div>
+    <div class="col-4 bg-light">
+        <h4 class="mt-3"><span class="text-muted">Total Walk Time:</span> @Model.TotalWalkDuration(Model.Walks) 
+        </h4>
     </div>
 </div>
