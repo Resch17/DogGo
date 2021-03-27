@@ -26,8 +26,8 @@ namespace DogGo.Controllers
         public ActionResult Index()
         {
             List<Walker> walkers = _walkerRepo.GetAllWalkers();
-
-            return View(walkers);
+            List<Walker> sorted = walkers.OrderBy(w => w.Neighborhood.Name).ToList();
+            return View(sorted);
         }
 
         // GET: WalkersController/Details/5
