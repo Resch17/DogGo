@@ -32,8 +32,9 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                         SELECT Id, Email, Name, Address, Phone, NeighborhoodId
-                         FROM Owner";
+                         SELECT o.Id, o.Email, o.Name, o.Address, o.Phone, o.NeighborhoodId, n.Name as Neighborhood
+                            FROM Owner o
+                            LEFT JOIN Neighborhood n on o.NeighborhoodId = n.Id";
                     SqlDataReader reader = cmd.ExecuteReader();
                     List<Owner> owners = new List<Owner>();
                     while (reader.Read())
@@ -45,7 +46,12 @@ namespace DogGo.Repositories
                             Name = reader.GetString(reader.GetOrdinal("Name")),
                             Address = reader.GetString(reader.GetOrdinal("Address")),
                             Phone = reader.GetString(reader.GetOrdinal("Phone")),
-                            NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
+                            NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
+                            Neighborhood = new Neighborhood()
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("Neighborhood")),
+                                Id = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
+                            }
                         };
 
                         owners.Add(owner);
