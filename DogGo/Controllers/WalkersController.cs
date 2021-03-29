@@ -14,12 +14,14 @@ namespace DogGo.Controllers
     {
         private readonly IWalkerRepository _walkerRepo;
         private readonly IWalkRepository _walkRepo;
+        private readonly IDogRepository _dogRepo;
 
         // ASP.NET will give us an instance of our Walker Repository. This is called "Dependency Injection"
-        public WalkersController(IWalkerRepository walkerRepository, IWalkRepository walkRepository)
+        public WalkersController(IWalkerRepository walkerRepository, IWalkRepository walkRepository, IDogRepository dogRepository)
         {
             _walkerRepo = walkerRepository;
             _walkRepo = walkRepository;
+            _dogRepo = dogRepository;
         }
 
         // GET: WalkersController
@@ -69,6 +71,47 @@ namespace DogGo.Controllers
                 return View();
             }
         }
+
+        // GET: WalkersController/CreateWalks
+        public ActionResult CreateWalks()
+        {
+            List<Dog> dogs = _dogRepo.GetAllDogs();
+            List<Walker> walkers = _walkerRepo.GetAllWalkers();
+            CreateWalkFormViewModel vm = new CreateWalkFormViewModel()
+            {
+                Dogs = dogs,
+                Walkers = walkers,
+                Walk = new Walk()
+            };
+            return View(vm);
+        }
+
+       // POST: WalkersController/CreateWalks
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CreateWalks(CreateWalkFormViewModel vm)
+        {
+            try
+            {
+                foreach (int dogId in vm.DogIds)
+                {
+                    Walk newWalk = new Walk()
+                    {
+                        DogId = dogId,
+                        WalkerId = vm.Walk.WalkerId,
+                        Duration = vm.Walk.Duration,
+                        Date = vm.Walk.Date
+                    };
+                    _walkRepo.AddWalk(newWalk);
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            catch
+            {
+                return View(vm);
+            }
+        }
+
 
         // GET: WalkersController/Edit/5
         public ActionResult Edit(int id)

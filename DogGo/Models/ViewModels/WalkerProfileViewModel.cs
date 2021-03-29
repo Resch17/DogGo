@@ -13,9 +13,8 @@ namespace DogGo.Models.ViewModels
         {
             List<int> durations = walks.Select(w => w.Duration).ToList();
             int total = durations.Sum();
-            int minutes = total / 60;
-            int hours = (minutes - minutes % 60) / 60;
-            return $"{hours}hr {minutes}min";
+            TimeSpan t = TimeSpan.FromSeconds(total);
+            return string.Format("{0:D2} hours {1:D2} min", t.Hours, t.Minutes);
         }
     }
 }
