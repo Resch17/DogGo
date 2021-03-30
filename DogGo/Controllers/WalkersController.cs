@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DogGo.Controllers
@@ -15,22 +16,35 @@ namespace DogGo.Controllers
         private readonly IWalkerRepository _walkerRepo;
         private readonly IWalkRepository _walkRepo;
         private readonly IDogRepository _dogRepo;
+        private readonly IOwnerRepository _ownerRepo;
 
         // ASP.NET will give us an instance of our Walker Repository. This is called "Dependency Injection"
-        public WalkersController(IWalkerRepository walkerRepository, IWalkRepository walkRepository, IDogRepository dogRepository)
+        public WalkersController(IWalkerRepository walkerRepository, IWalkRepository walkRepository, IDogRepository dogRepository, IOwnerRepository ownerRepository)
         {
             _walkerRepo = walkerRepository;
             _walkRepo = walkRepository;
             _dogRepo = dogRepository;
+            _ownerRepo = ownerRepository;
         }
 
         // GET: WalkersController
         public ActionResult Index()
         {
-            List<Walker> walkers = _walkerRepo.GetAllWalkers();
-            // List<Walker> sorted = walkers.OrderBy(w => w.Neighborhood.Name).ToList();
-            return View(walkers);
-        }
+            List<Walker> walkers = new List<Walker>();
+            try
+            {
+                int userId = GetCurrentUserId();
+                Owner currentUser = _ownerRepo.GetOwnerById(GetCurrentUserId());
+                walkers = _walkerRepo.GetWalkersInNeighborhood(currentUser.NeighborhoodId);
+                return View(walkers);
+
+            }
+            catch
+            {
+                walkers = _walkerRepo.GetAllWalkers();
+                return View(walkers);
+            }
+        } 
 
         // GET: WalkersController/Details/5
         public ActionResult Details(int id)
@@ -153,6 +167,12 @@ namespace DogGo.Controllers
             {
                 return View();
             }
+        }
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }
