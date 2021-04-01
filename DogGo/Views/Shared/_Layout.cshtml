@@ -28,7 +28,7 @@
                             @if (User.IsInRole("DogOwner"))
                             {
                                 <li class="nav-item mx-2">
-                                    <a class="nav-link text-dark text-uppercase" asp-area="" asp-controller="Dogs" asp-action="Index">Dogs</a>
+                                    <a class="nav-link text-dark text-uppercase" asp-area="" asp-controller="Owners" asp-action="Details" asp-route-id=@User.FindFirst(ClaimTypes.NameIdentifier).Value >Profile</a>
                                 </li>
                             }
                             <li class="nav-item ml-auto"><a class="nav-link text-dark" asp-area="" asp-controller="Owners" asp-action="Logout">Logout @User.Identity.Name</a></li>

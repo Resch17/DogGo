@@ -105,14 +105,15 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    INSERT INTO Walks (Date, Duration, WalkerId, DogId)
+                    INSERT INTO Walks (Date, Duration, WalkerId, DogId, WalkStatusId)
                     OUTPUT INSERTED.ID
-                    VALUES (@date, @duration, @walkerId, @dogId)";
+                    VALUES (@date, @duration, @walkerId, @dogId, @walkStatusId)";
 
                     cmd.Parameters.AddWithValue("@date", walk.Date);
                     cmd.Parameters.AddWithValue("@duration", walk.Duration);
                     cmd.Parameters.AddWithValue("@walkerId", walk.WalkerId);
                     cmd.Parameters.AddWithValue("@dogId", walk.DogId);
+                    cmd.Parameters.AddWithValue("@walkStatusId", walk.WalkStatusId);
 
                     int id = (int)cmd.ExecuteScalar();
 

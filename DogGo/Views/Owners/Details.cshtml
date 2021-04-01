@@ -1,6 +1,10 @@
-﻿@model DogGo.Models.ViewModels.ProfileViewModel 
+﻿@using System.Security.Claims;
+@model DogGo.Models.ViewModels.ProfileViewModel 
 
 @{ ViewData["Title"] ="Profile"; }
+
+@if (Model.Owner.Id == Int32.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+{
 <div>
   <h1 class="mb-4">@Model.Owner.Name</h1>
 
@@ -31,17 +35,21 @@
       <h1 class="text-left">Dogs</h1>
 
       <div class="row">
-        @foreach (Dog dog in Model.Dogs) {
+        @foreach (Dog dog in Model.Dogs)
+        {
           <div class="card m-4" style="width: 18rem;">
-              @if (String.IsNullOrEmpty(dog.ImageUrl)) {
+              @if (String.IsNullOrEmpty(dog.ImageUrl))
+              {
         <img
           src="https://cdn.pixabay.com/photo/2018/08/15/13/12/dog-3608037_960_720.jpg"
           class="card-img-top"
           alt="Doggo"
         />
-        } else {
+              }
+              else
+              {
         <img src="@dog.ImageUrl" class="card-img-top" alt="Doggo" />
-        }
+              }
               @*<img src="https://cdn.pixabay.com/photo/2018/08/15/13/12/dog-3608037_960_720.jpg"
                    class="card-img-top"
                    alt="Doggo" />*@
@@ -68,13 +76,20 @@
       <h1>Walkers Near Me</h1>
 
       <ul class="list-group mt-4">
-        @foreach (Walker walker in Model.Walkers) {
-        <li class="list-group-item disabled" aria-disabled="true">
-          <img src="@walker.ImageUrl" style="width:50px" />
-          <span class="font-weight-bold ml-4">@walker.Name</span>
-        </li>
+        @foreach (Walker walker in Model.Walkers)
+        {
+          <li class="list-group-item">
+              <img src="@walker.ImageUrl" style="width:50px" />
+              <span class="font-weight-bold ml-4">@walker.Name</span>
+              <a asp-area="" asp-controller="Walkers" asp-action="CreateWalks" asp-route-id=@walker.Id>Schedule a Walk</a>    
+          </li>
         }
       </ul>
     </section>
   </div>
 </div>
+}
+else
+{
+    <h1>YOU DON'T BELONG HERE!</h1>
+}

@@ -87,15 +87,20 @@ namespace DogGo.Controllers
         }
 
         // GET: WalkersController/CreateWalks
-        public ActionResult CreateWalks()
+        public ActionResult CreateWalks(int id)
         {
-            List<Dog> dogs = _dogRepo.GetAllDogs();
-            List<Walker> walkers = _walkerRepo.GetAllWalkers();
+            int ownerId = GetCurrentUserId();
+            List<Dog> dogs = _dogRepo.GetDogsByOwnerId(ownerId);
+            Walker walker = _walkerRepo.GetWalkerById(id);
             CreateWalkFormViewModel vm = new CreateWalkFormViewModel()
             {
                 Dogs = dogs,
-                Walkers = walkers,
+                Walker = walker,
                 Walk = new Walk()
+                {
+                    WalkerId = walker.Id,
+                    Duration = 0,
+                }
             };
             return View(vm);
         }
@@ -114,7 +119,8 @@ namespace DogGo.Controllers
                         DogId = dogId,
                         WalkerId = vm.Walk.WalkerId,
                         Duration = vm.Walk.Duration,
-                        Date = vm.Walk.Date
+                        Date = vm.Walk.Date,
+                        WalkStatusId = 1
                     };
                     _walkRepo.AddWalk(newWalk);
                 }
